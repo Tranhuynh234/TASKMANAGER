@@ -1,0 +1,122 @@
+user.html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trang cá nhân - Quản lý công việc</title>
+  <link rel="stylesheet" href="../css/user.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="avatar-box">
+        <img id="profile-img" src="../images/avatar.jpg" alt="Avatar" class="avatar"/>
+        <h2 id="profile-name">Người dùng</h2>
+      </div>
+      <nav class="nav-menu">
+        <a href="#" class="active"><i class="fas fa-user"></i> Thông tin cá nhân</a>
+        <a href="#"><i class="fas fa-users"></i> Nhóm</a>
+        <a href="#"><i class="fas fa-chart-bar"></i> Bảng thống kê</a>
+        <a href="../php/logout.php"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <section class="content-section">
+        <h1 class="section-title">Thông tin cá nhân</h1>
+        <div class="info-box">
+          <div class="profile-section">
+            <h3>Profile Photo</h3>
+            <div class="profile-photo">
+              <img id="profile-img-preview" src="../images/avatar" alt="Avatar Preview" />
+              <div class="photo-actions">
+                <form id="avatar-form" enctype="multipart/form-data">
+                  <input type="file" name="avatar" id="avatar-input" accept="image/*" hidden />
+                  <button type="button" id="remove-photo">Remove photo</button>
+                  <button type="button" id="change-photo">Change photo</button>
+                </form>
+              </div>
+            </div>
+
+            <div class="info-row">
+              <label>Name</label>
+              <span id="user-name">Loading...</span>
+              <button onclick="editField('name')">Edit</button>
+            </div>
+
+            <div class="info-row">
+              <label>Email address</label>
+              <span id="user-email">Loading...</span>
+              <button onclick="editField('email')">Edit</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Fetch user data
+    fetch('../php/get_user.php')
+      .then(res => res.json())
+      .then(user => {
+        if (!user) return window.location.href = 'signin.html';
+        document.getElementById('profile-name').textContent = user.name || 'Chưa đặt tên';
+        document.getElementById('user-name').textContent = user.name || 'Chưa đặt tên';
+        document.getElementById('user-email').textContent = user.email;
+        if (user.avatar) {
+          document.getElementById('profile-img').src = '../images/avatars/' + user.avatar;
+document.getElementById('profile-img-preview').src = '../images/avatars/' + user.avatar;
+        }
+      });
+
+    document.getElementById("change-photo").onclick = () => {
+      document.getElementById("avatar-input").click();
+    };
+
+    document.getElementById("avatar-input").addEventListener("change", function() {
+      const file = this.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("avatar", file);
+
+      fetch("../php/upload_avatar.php", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          document.getElementById("profile-img").src = "../images/avatars/" + data.filename;
+          document.getElementById("profile-img-preview").src = "../images/avatars/" + data.filename;
+        } else {
+          alert("Lỗi upload ảnh");
+        }
+      });
+    });
+
+    document.getElementById("remove-photo").addEventListener("click", function () {
+      fetch("../php/remove_avatar.php", {
+        method: "POST"
+      })
+      .then(() => location.reload());
+    });
+
+    function editField(field) {
+      const value = prompt("Nhập " + field + " mới:");
+      if (!value) return;
+
+      fetch("../php/update_profile.php", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({field, value})
+      }).then(() => location.reload());
+    }
+  </script>
+</body>
+</html>
