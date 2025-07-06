@@ -7,14 +7,16 @@ on:
 
 jobs:
   build-and-deploy:
+    permissions: # THÊM KHỐI NÀY VÀO ĐÂY
+      contents: write # Cấp quyền ghi vào repository
     runs-on: ubuntu-latest # Chạy trên hệ điều hành Ubuntu mới nhất
     steps:
-      - name: Checkout 🛎️ # Bước 1: Kéo code từ repository về
+      - name: Checkout 🛎️
         uses: actions/checkout@v4
 
-      - name: Deploy to GitHub Pages 🚀 # Bước 2: Triển khai lên GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3 # Sử dụng action của bên thứ 3
+      - name: Deploy to GitHub Pages 🚀
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} # Mã token để xác thực
-          publish_dir: ./html # ĐÂY LÀ PHẦN QUAN TRỌNG: Chỉ định thư mục html để deploy
-          publish_branch: gh-pages # Pages sẽ được deploy lên nhánh gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./html
+          publish_branch: gh-pages
