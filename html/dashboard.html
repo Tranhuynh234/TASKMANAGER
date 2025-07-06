@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="../css/style.css">
 </head>
+
 <body>
     <div class="container">
         <header>
@@ -22,7 +24,8 @@
                             <g stroke="currentcolor" stroke-linecap="round" stroke-width="4" transform="translate(0,4)">
                                 <g class="switch__letter">
                                     <polyline class="switch__letter-stroke" points="2 2,2 14" />
-                                    <polyline class="switch__letter-stroke" points="2 2,16 2" stroke-dasharray="14 16" stroke-dashoffset="8" transform="rotate(0,2,2)" />
+                                    <polyline class="switch__letter-stroke" points="2 2,16 2" stroke-dasharray="14 16"
+                                        stroke-dashoffset="8" transform="rotate(0,2,2)" />
                                     <polyline class="switch__letter-stroke" points="2 8,6 8" stroke-dasharray="4 6" />
                                 </g>
                                 <g class="switch__letter" transform="translate(14,0)">
@@ -35,9 +38,12 @@
                         <span class="switch__text"></span>
                     </label>
 
-                    <div class="icon-notification-message notification-container"> <!-- Thêm class notification-container để dễ dàng định vị trong CSS/JS -->
-                        <i class="fas fa-bell notification-icon" id="notificationBell"></i> <!-- Thêm ID để dễ dàng bắt sự kiện click -->
-                        <span class="badge notification-badge">5</span>    <!-- Giữ lại badge nếu bạn muốn hiển thị số lượng thông báo chưa đọc -->
+                    <div class="icon-notification-message notification-container">
+                        <!-- Thêm class notification-container để dễ dàng định vị trong CSS/JS -->
+                        <i class="fas fa-bell notification-icon" id="notificationBell"></i>
+                        <!-- Thêm ID để dễ dàng bắt sự kiện click -->
+                        <span class="badge notification-badge">5</span>
+                        <!-- Giữ lại badge nếu bạn muốn hiển thị số lượng thông báo chưa đọc -->
 
                         <div class="notifications-dropdown" id="notificationsDropdown">
                             <div class="notifications-header">
@@ -69,13 +75,19 @@
         <div class="main-content">
             <div class="sidebar">
                 <ul class="sidebar-menu">
-                    <li><a href="#" class="active" id="tasksViewBtn" data-category-filter="all"><i class="fas fa-home"></i> <span>Tác vụ</span></a></li>
+                    <li><a href="#" class="active" id="tasksViewBtn" data-category-filter="all"><i
+                                class="fas fa-home"></i> <span>Tác vụ</span></a></li>
                     <li><a href="#" id="calendarViewBtn"><i class="fas fa-calendar-alt"></i> <span>Lịch</span></a></li>
-                    <li><a href="#" id="statisticsViewBtn"><i class="fas fa-chart-bar"></i> <span>Thống kê</span></a></li>
-                    <li><a href="#" id="groupCategoryLink" data-category-filter="group"><i class="fas fa-users"></i> <span>Nhóm</span></a></li>
-                    <li><a href="#" id="workCategoryLink" data-category-filter="work"><i class="fas fa-briefcase"></i> <span>Công việc</span></a></li>
-                    <li><a href="#" id="studyCategoryLink" data-category-filter="study"><i class="fas fa-book"></i> <span>Học tập</span></a></li>
-                    <li><a href="#" id="personalCategoryLink" data-category-filter="personal"><i class="fas fa-heart"></i> <span>Cá nhân</span></a></li>
+                    <li><a href="#" id="statisticsViewBtn"><i class="fas fa-chart-bar"></i> <span>Thống kê</span></a>
+                    </li>
+                    <li><a href="#" id="groupCategoryLink" data-category-filter="group"><i class="fas fa-users"></i>
+                            <span>Nhóm</span></a></li>
+                    <li><a href="#" id="workCategoryLink" data-category-filter="work"><i class="fas fa-briefcase"></i>
+                            <span>Công việc</span></a></li>
+                    <li><a href="#" id="studyCategoryLink" data-category-filter="study"><i class="fas fa-book"></i>
+                            <span>Học tập</span></a></li>
+                    <li><a href="#" id="personalCategoryLink" data-category-filter="personal"><i
+                                class="fas fa-heart"></i> <span>Cá nhân</span></a></li>
                 </ul>
             </div>
 
@@ -175,7 +187,8 @@
             <div class="group-section" id="groupSection" style="display: none;">
                 <div class="header">
                     <h1>Quản lý Nhóm</h1>
-                    <button class="btn btn-primary" id="createGroupBtn"><i class="fas fa-plus"></i> Tạo nhóm mới</button>
+                    <button class="btn btn-primary" id="createGroupBtn"><i class="fas fa-plus"></i> Tạo nhóm
+                        mới</button>
                 </div>
 
                 <div class="task-filters">
@@ -209,7 +222,8 @@
             <div class="study-section" id="studySection">
                 <div class="header">
                     <h1>Quản lý Học Tập</h1>
-                    <button class="btn btn-primary" id="createStudyTaskBtn"><i class="fas fa-plus"></i> Tạo tác vụ học tập mới</button>
+                    <button class="btn btn-primary" id="createStudyTaskBtn"><i class="fas fa-plus"></i> Tạo tác vụ học
+                        tập mới</button>
                 </div>
 
                 <div class="task-filters">
@@ -229,7 +243,8 @@
             <div class="personal-section" id="personalSection" style="display: none;">
                 <div class="header">
                     <h1>Quản lý Tác vụ Cá nhân</h1>
-                    <button class="btn btn-primary" id="createPersonalTaskBtn"><i class="fas fa-plus"></i> Thêm tác vụ cá nhân mới</button>
+                    <button class="btn btn-primary" id="createPersonalTaskBtn"><i class="fas fa-plus"></i> Thêm tác vụ
+                        cá nhân mới</button>
                 </div>
 
                 <div class="task-filters">
@@ -289,7 +304,8 @@
                     <label>Nhiệm vụ con</label>
                     <div id="subtasksList">
                     </div>
-                    <button type="button" class="btn btn-primary" id="addSubtaskBtn"><i class="fas fa-plus"></i> Thêm nhiệm vụ con</button>
+                    <button type="button" class="btn btn-primary" id="addSubtaskBtn"><i class="fas fa-plus"></i> Thêm
+                        nhiệm vụ con</button>
                 </div>
                 <div class="form-group">
                     <label for="taskStartDate">Thời gian bắt đầu</label>
@@ -355,10 +371,10 @@
                 <div class="form-group">
                     <label for="groupPriority">Độ ưu tiên</label>
                     <select id="groupPriority" class="form-control" required>
-                    <option value="high">Cao</option>
-                    <option value="medium">Trung bình</option>
-                    <option value="low">Thấp</option>
-                </select>
+                        <option value="high">Cao</option>
+                        <option value="medium">Trung bình</option>
+                        <option value="low">Thấp</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="groupStatus">Trạng thái</label>
@@ -527,6 +543,7 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="script.js"></script>
+    <script src="../js/script.js"></script>
 </body>
+
 </html>
