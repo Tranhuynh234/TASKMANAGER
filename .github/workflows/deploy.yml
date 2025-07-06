@@ -1,0 +1,20 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master # Chạy workflow khi có push lên nhánh master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest # Chạy trên hệ điều hành Ubuntu mới nhất
+    steps:
+      - name: Checkout 🛎️ # Bước 1: Kéo code từ repository về
+        uses: actions/checkout@v4
+
+      - name: Deploy to GitHub Pages 🚀 # Bước 2: Triển khai lên GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3 # Sử dụng action của bên thứ 3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }} # Mã token để xác thực
+          publish_dir: ./html # ĐÂY LÀ PHẦN QUAN TRỌNG: Chỉ định thư mục html để deploy
+          publish_branch: gh-pages # Pages sẽ được deploy lên nhánh gh-pages
