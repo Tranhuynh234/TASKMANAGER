@@ -1,11 +1,11 @@
 <?php
 session_start();
+require_once 'config.php'; // Include configuration
 
-// Hủy bỏ tất cả các biến session
+// Clear all session variables
 $_SESSION = array();
 
-// Nếu muốn hủy bỏ session hoàn toàn, cũng xóa cookie session.
-// Lưu ý: Điều này sẽ phá hủy session, và không chỉ dữ liệu session.
+// If the session cookie is used, delete it
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
     setcookie(session_name(), '', time() - 42000,
@@ -14,13 +14,10 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
-// Cuối cùng, hủy session.
+// Destroy the session
 session_destroy();
 
-// Xóa username khỏi sessionStorage của trình duyệt
-echo "<script>sessionStorage.removeItem('loggedInUsername');</script>";
-
-// Chuyển hướng về trang đăng nhập
-header("Location: ../html/index.html"); // Đã điều chỉnh đường dẫn
+// Redirect to the sign-in page
+header("Location: " . SIGNIN_PAGE);
 exit();
 ?>

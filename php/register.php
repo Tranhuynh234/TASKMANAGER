@@ -1,34 +1,55 @@
 <?php
 session_start();
-// include 'db_connect.php'; // Removed database connection as per simplification request
-
 header('Content-Type: application/json');
-$response = ['status' => 'error', 'message' => ''];
+require_once 'config.php'; // Include configuration
 
-// As per the simplification request "bỏ post, bỏ mấy phần phức tạp đi",
-// and "chỉ 1 gmail bất kỳ 1 mật khẩu bất kỳ",
-// this script will always simulate a successful registration
-// for any provided email and password, without actual user creation or validation.
-// The $_SERVER["REQUEST_METHOD"] check is removed, as well as database interaction and validation.
+$email = trim($_POST['email'] ?? '');
+$password = $_POST['password'] ?? '';
+$confirm_password = $_POST['confirm_password'] ?? '';
 
-    $email = trim($_POST['email'] ?? 'newuser@example.com'); // Default email if not provided
-    $password = $_POST['password'] ?? 'anypassword'; // Default password if not provided
-    // $confirm_password is not used for validation anymore.
+if (empty($email) || empty($password) || empty($confirm_password)) {
+    echo json_encode(['status' => 'error', 'message' => 'Vui lòng điền đầy đủ thông tin.']);
+    exit();
+}
 
-    // Simulate successful registration and immediate login
-    $user_id = uniqid(); // Generate a unique ID for the new "user"
+if ($password !== $confirm_password) {
+    echo json_encode(['status' => 'error', 'message' => 'Mật khẩu xác nhận không khớp.']);
+    exit();
+}
+
+try {
+    // Check if email already exists
+    $stmt = $pdo->prepare("SELECT user_id FROM users WHERE username = ?");
+    $stmt->execute([$email]);
+    if ($stmt->fetch()) {
+        echo json_encode(['status' => 'error', 'message' => 'Email này đã được đăng ký.']);
+        exit();
+    }
+
+    // Hash the password before storing (IMPORTANT for security)
+    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+    // Insert new user into the database
+    $stmt = $pdo->prepare("INSERT INTO users (username, password_hash) VALUES (?, ?)");
+    $stmt->execute([$email, $password_hash]);
+
+    $user_id = $pdo->lastInsertId();
+
+    // Set session variables for the newly registered user
     $_SESSION['user_id'] = $user_id;
-    $_SESSION['username'] = $email; // Use the provided email as username for session
+    $_SESSION['user'] = [
+        'user_id' => $user_id,
+        'email'   => $email,
+        'name'    => '', // Empty for initial registration, user fills later
+        'dob'     => '', // Empty for initial registration, user fills later
+        'avatar'  => 'default.jpg' // Default avatar (using a placeholder for `DEFAULT_AVATAR` as it's not defined in `config.php`)
+    ];
     $_SESSION['logged_in'] = true;
 
-    $response['status'] = 'success';
-    $response['message'] = 'Đăng ký thành công! Bạn đã được đăng nhập.';
-    $response['username'] = $email; // Return email for frontend confirmation
+    echo json_encode(['status' => 'success', 'message' => 'Đăng ký thành công!', 'username' => $email]);
 
-// Database interaction and complex validation removed.
-// if (isset($conn)) {
-//     $conn->close();
-// }
-echo json_encode($response);
-
+} catch (PDOException $e) {
+    http_response_code(500);
+    echo json_encode(['status' => 'error', 'message' => 'Lỗi đăng ký: ' . $e->getMessage()]);
+}
 ?>

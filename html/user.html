@@ -1,121 +1,225 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trang cá nhân - Quản lý công việc</title>
-  <link rel="stylesheet" href="../css/user.css"/>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Thông tin cá nhân</title>
+    <link rel="stylesheet" href="../css/user.css" />
 </head>
 <body>
-  <div class="container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="avatar-box">
-        <img id="profile-img" src="../images/avatar.jpg" alt="Avatar" class="avatar"/>
-        <h2 id="profile-name">Người dùng</h2>
-      </div>
-      <nav class="nav-menu">
-        <a href="#" class="active"><i class="fas fa-user"></i> Thông tin cá nhân</a>
-        <a href="#"><i class="fas fa-users"></i> Nhóm</a>
-        <a href="#"><i class="fas fa-chart-bar"></i> Bảng thống kê</a>
-        <a href="../php/logout.php"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
-      </nav>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-      <section class="content-section">
-        <h1 class="section-title">Thông tin cá nhân</h1>
-        <div class="info-box">
-          <div class="profile-section">
-            <h3>Profile Photo</h3>
-            <div class="profile-photo">
-              <img id="profile-img-preview" src="../images/avatar" alt="Avatar Preview" />
-              <div class="photo-actions">
-                <form id="avatar-form" enctype="multipart/form-data">
-                  <input type="file" name="avatar" id="avatar-input" accept="image/*" hidden />
-                  <button type="button" id="remove-photo">Remove photo</button>
-                  <button type="button" id="change-photo">Change photo</button>
-                </form>
-              </div>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="avatar-box">
+                <img id="profile-img" src="../images/default.jpg" class="avatar" alt="User profile picture" />
+                <h2 id="profile-name">Người dùng</h2>
             </div>
+            </aside>
 
-            <div class="info-row">
-              <label>Name</label>
-              <span id="user-name">Loading...</span>
-              <button onclick="editField('name')">Edit</button>
+        <main class="main-content">
+            <section class="content-section">
+                <h1 class="section-title">Thông tin cá nhân</h1>
+                <div class="info-box">
+                    <div class="profile-section">
+                        <div class="info-row">
+                            <label>Họ Tên:</label>
+                            <span id="user-name">Đang tải...</span>
+                        </div>
+                        <div class="info-row">
+                            <label>Ngày sinh:</label>
+                            <span id="user-dob">Đang tải...</span>
+                        </div>
+                        <div class="info-row">
+                            <label>Email:</label>
+                            <span id="user-email">Đang tải...</span>
+                        </div>
+                        <button class="edit-profile-btn" id="edit-profile-btn">Chỉnh sửa hồ sơ</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div id="edit-form-container" class="modal-overlay modal-hidden">
+        <form id="edit-form" class="modal-content">
+            <h2>Điền thông tin cá nhân</h2>
+            <label for="input-name">Họ Tên:</label>
+            <input type="text" id="input-name" name="name" required />
+
+            <label for="input-dob">Ngày sinh:</label>
+            <input type="date" id="input-dob" name="dob" required />
+
+            <label for="input-email">Email:</label>
+            <input type="email" id="input-email" name="email" readonly />
+
+            <div class="form-actions">
+                <button type="submit" class="btn-save">Lưu</button>
+                <button type="button" class="btn-cancel" id="cancel-edit-form">Hủy</button>
             </div>
+        </form>
+    </div>
 
-            <div class="info-row">
-              <label>Email address</label>
-              <span id="user-email">Loading...</span>
-              <button onclick="editField('email')">Edit</button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const profileNameEl = document.getElementById('profile-name');
+            const userNameEl = document.getElementById('user-name');
+            const userDobEl = document.getElementById('user-dob');
+            const userEmailEl = document.getElementById('user-email');
+            const profileImgEl = document.getElementById('profile-img');
 
-  <script>
-    // Fetch user data
-    fetch('../php/get_user.php')
-      .then(res => res.json())
-      .then(user => {
-        if (!user) return window.location.href = 'signin.html';
-        document.getElementById('profile-name').textContent = user.name || 'Chưa đặt tên';
-        document.getElementById('user-name').textContent = user.name || 'Chưa đặt tên';
-        document.getElementById('user-email').textContent = user.email;
-        if (user.avatar) {
-          document.getElementById('profile-img').src = '../images/avatars/' + user.avatar;
-document.getElementById('profile-img-preview').src = '../images/avatars/' + user.avatar;
-        }
-      });
+            const editFormContainer = document.getElementById('edit-form-container');
+            const editForm = document.getElementById('edit-form');
+            const inputNameEl = document.getElementById('input-name');
+            const inputDobEl = document.getElementById('input-dob');
+            const inputEmailEl = document.getElementById('input-email');
+            const cancelEditFormBtn = document.getElementById('cancel-edit-form');
+            const editProfileBtn = document.getElementById('edit-profile-btn'); // The single edit button
 
-    document.getElementById("change-photo").onclick = () => {
-      document.getElementById("avatar-input").click();
-    };
+            /**
+             * Shows the edit form modal.
+             */
+            function showEditForm() {
+                editFormContainer.classList.remove('modal-hidden');
+                editFormContainer.classList.add('modal-visible');
+            }
 
-    document.getElementById("avatar-input").addEventListener("change", function() {
-      const file = this.files[0];
-      if (!file) return;
+            /**
+             * Hides the edit form modal.
+             */
+            function hideEditForm() {
+                editFormContainer.classList.remove('modal-visible');
+                editFormContainer.classList.add('modal-hidden');
+            }
 
-      const formData = new FormData();
-      formData.append("avatar", file);
+            /**
+             * Populates the profile display and the edit form inputs.
+             * @param {object} user - The user object containing profile data.
+             */
+            function populateProfileUI(user) {
+                profileNameEl.textContent = user.name || 'Người dùng';
+                userNameEl.textContent = user.name || 'Chưa có tên';
+                userDobEl.textContent = user.dob || 'Chưa có ngày sinh';
+                userEmailEl.textContent = user.email || 'Chưa có email';
 
-      fetch("../php/upload_avatar.php", {
-        method: "POST",
-        body: formData
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.success) {
-          document.getElementById("profile-img").src = "../images/avatars/" + data.filename;
-          document.getElementById("profile-img-preview").src = "../images/avatars/" + data.filename;
-        } else {
-          alert("Lỗi upload ảnh");
-        }
-      });
-    });
+                profileImgEl.src = user.avatar ? `../images/avatars/${user.avatar}` : '../images/default.jpg';
 
-    document.getElementById("remove-photo").addEventListener("click", function () {
-      fetch("../php/remove_avatar.php", {
-        method: "POST"
-      })
-      .then(() => location.reload());
-    });
+                // Populate edit form fields
+                inputNameEl.value = user.name || '';
+                inputDobEl.value = user.dob || '';
+                inputEmailEl.value = user.email || ''; // Email is read-only in the form
+            }
 
-    function editField(field) {
-      const value = prompt("Nhập " + field + " mới:");
-      if (!value) return;
+            /**
+             * Fetches user information from the backend.
+             * Đã loại bỏ alert và chuyển hướng khi có lỗi fetch để đơn giản hóa.
+             */
+            async function fetchUserInfo() {
+                try {
+                    const res = await fetch('../php/get_user.php');
+                    if (!res.ok) {
+                        // Nếu phản hồi không OK (ví dụ: 404, 500)
+                        // Vẫn log lỗi nhưng không hiển thị alert hay chuyển hướng
+                        console.error(`HTTP error! status: ${res.status}`);
+                        return null; // Trả về null để chỉ ra lỗi
+                    }
+                    const user = await res.json();
 
-      fetch("../php/update_profile.php", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({field, value})
-      }).then(() => location.reload());
-    }
-  </script>
+                    if (!user || user.error) {
+                        // Nếu dữ liệu JSON trả về có lỗi (ví dụ: {"error": "Not logged in"})
+                        // Vẫn log lỗi nhưng không hiển thị alert hay chuyển hướng
+                        console.error('Lỗi khi lấy thông tin người dùng:', user ? user.message : 'Dữ liệu rỗng hoặc không hợp lệ');
+                        return null; // Trả về null để chỉ ra lỗi
+                    }
+                    return user;
+                } catch (error) {
+                    // Lỗi mạng hoặc lỗi parsing JSON
+                    // Vẫn log lỗi nhưng không hiển thị alert hay chuyển hướng
+                    console.error('Lỗi fetch:', error);
+                    return null; // Trả về null để chỉ ra lỗi
+                }
+            }
+
+            // --- Initialization on page load ---
+            (async () => {
+                const user = await fetchUserInfo();
+                if (user) {
+                    populateProfileUI(user);
+
+                    // Check if it's a new user and incomplete profile, then show the form
+                    const isNewUser = localStorage.getItem("task_user_new") === "true";
+                    if (isNewUser && (!user.name || !user.dob)) {
+                        showEditForm();
+                        localStorage.removeItem("task_user_new"); // Clear the flag after showing
+                    }
+                } else {
+                    // Nếu fetchUserInfo trả về null (có lỗi), tự động chuyển hướng về trang đăng nhập
+                    console.log("Không tải được thông tin người dùng. Tự động chuyển hướng về trang đăng nhập.");
+                    window.location.href = 'signin.html';
+                }
+            })();
+
+            // Event listener for cancel button
+            cancelEditFormBtn.addEventListener('click', hideEditForm);
+
+            // Event listener for the single "Chỉnh sửa hồ sơ" button
+            editProfileBtn.addEventListener('click', () => {
+                // Ensure form is populated with current displayed values before showing
+                inputNameEl.value = userNameEl.textContent === 'Chưa có tên' ? '' : userNameEl.textContent;
+                inputDobEl.value = userDobEl.textContent === 'Chưa có ngày sinh' ? '' : userDobEl.textContent;
+                inputEmailEl.value = userEmailEl.textContent;
+                showEditForm();
+            });
+
+            // Handle form submission for updating profile
+            editForm.addEventListener('submit', async function(e) {
+                e.preventDefault(); // Prevent default form submission
+
+                const name = inputNameEl.value.trim();
+                const dob = inputDobEl.value;
+                const email = inputEmailEl.value; // Email from the form (read-only)
+
+                if (!name || !dob) {
+                    alert('Vui lòng nhập đầy đủ Họ Tên và Ngày sinh.');
+                    return;
+                }
+
+                try {
+                    const res = await fetch('../php/update_profile.php', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            field: 'full', // Indicates updating full profile
+                            value: { name, dob, email }
+                        })
+                    });
+
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    const data = await res.json();
+
+                    if (data.success) {
+                        alert('Cập nhật thông tin thành công!');
+                        hideEditForm();
+                        // Re-fetch and populate UI to ensure consistency with backend
+                        const updatedUser = await fetchUserInfo();
+                        if (updatedUser) {
+                            populateProfileUI(updatedUser);
+                        } else {
+                            // Nếu cập nhật thành công nhưng sau đó fetch lại thất bại (hiếm khi xảy ra)
+                            console.error("Cập nhật thành công nhưng không tải lại được thông tin người dùng mới.");
+                            // Có thể thêm xử lý phụ ở đây nếu cần, ví dụ: chuyển hướng về signin.html
+                            window.location.href = 'signin.html'; // Tự động chuyển hướng nếu không thể lấy dữ liệu mới
+                        }
+                    } else {
+                        console.error('Lỗi cập nhật:', data.message);
+                        alert('Cập nhật thất bại: ' + (data.message || 'Lỗi không xác định'));
+                    }
+                } catch (error) {
+                    console.error('Lỗi khi gửi dữ liệu cập nhật:', error);
+                    alert('Lỗi khi gửi dữ liệu cập nhật. Vui lòng kiểm tra kết nối.');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
